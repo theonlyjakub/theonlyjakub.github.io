@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TheOnlyJakub — Tvorba webů a aplikací</title>
+  <meta name="description" content="Profesionální tvorba webů, aplikací a moderních designů. Rychle, spolehlivě a bez zbytečných průtahů." />
+  <style>
+    :root {
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-secondary: #818cf8;
+      --radius: 24px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+      background: radial-gradient(ellipse at bottom, #090d16 0%, #020408 100%);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    /* Hvězdná obloha přes celý web */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background-image: 
+        radial-gradient(2px 2px at 25px 35px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(1.5px 1.5px at 70px 120px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 150px 80px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 220px 200px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 310px 150px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(1.5px 1.5px at 420px 60px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 530px 240px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 620px 110px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 710px 300px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(1.5px 1.5px at 820px 170px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 910px 90px, #ffffff, rgba(0,0,0,0));
+      background-repeat: repeat;
+      background-size: 450px 350px;
+      opacity: 0.6;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Elegantní styl písmo z úvodu */
+    .signature-font {
+      font-family: 'Brush Script MT', 'Segoe Script', 'Lucida Handwriting', cursive, sans-serif;
+      font-style: italic;
+      letter-spacing: 1px;
+      text-shadow: 
+        -2px -2px 0px rgba(56, 189, 248, 0.9),
+        2px 2px 0px rgba(249, 115, 22, 0.9),
+        0 0 20px rgba(255, 255, 255, 0.4);
+    }
+
+    /* Úvodní obrazovka */
+    #intro-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: radial-gradient(ellipse at bottom, #090d16 0%, #020408 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.7s ease, visibility 0.7s ease;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    #intro-screen::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-image: 
+        radial-gradient(2px 2px at 25px 35px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(1.5px 1.5px at 70px 120px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 150px 80px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 220px 200px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 310px 150px, #ffffff, rgba(0,0,0,0));
+      background-repeat: repeat;
+      background-size: 450px 350px;
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    #intro-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .intro-content {
+      text-align: center;
+      padding: 20px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .intro-title {
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      color: #ffffff;
+      transition: transform 0.3s ease;
+    }
+
+    #intro-screen:hover .intro-title {
+      transform: scale(1.05);
+    }
+
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Navigace */
+    header {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(9, 13, 22, 0.65);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 76px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .brand-text {
+      font-size: 1.5rem;
+      color: var(--text);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    /* Hero sekce */
+    .hero {
+      padding: 110px 0 80px;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(56, 189, 248, 0.08);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.1);
+      backdrop-filter: blur(12px);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.2rem);
+      font-weight: 900;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--text) 30%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      max-width: 650px;
+      margin: 0 auto 36px;
+      color: var(--muted);
+      font-size: 1.15rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    /* Tlačítka */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 26px;
+      border-radius: 16px;
+      font-weight: 600;
+      font-size: 0.98rem;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+      color: #07090e;
+      box-shadow: 0 10px 30px rgba(56, 189, 248, 0.4);
+      font-weight: 700;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.15);
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(56, 189, 248, 0.6);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      color: var(--text);
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(56, 189, 248, 0.5);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(56, 189, 248, 0.15);
+    }
+
+    /* Sekce */
+    section {
+      padding: 90px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .section-title span {
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .section-title h2 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    /* 3D Liquid Glassmorphism karty */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 28px;
+    }
+
+    .feature-card {
+      background: rgba(13, 19, 33, 0.35);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-top: 1px solid rgba(255, 255, 255, 0.22);
+      border-left: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius);
+      padding: 36px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.15);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-8px);
+      background: rgba(18, 27, 46, 0.5);
+      border-color: rgba(56, 189, 248, 0.45);
+      box-shadow: 0 35px 70px rgba(0, 0, 0, 0.7), 0 0 35px rgba(56, 189, 248, 0.25), inset 0 1px 3px rgba(255, 255, 255, 0.3);
+    }
+
+    .feature-icon {
+      width: 54px;
+      height: 54px;
+      border-radius: 16px;
+      background: rgba(56, 189, 248, 0.1);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 22px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.15), 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .feature-card h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .feature-card p {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    /* 3D Liquid Glassmorphism kontaktní box */
+    .contact-box {
+      background: rgba(13, 19, 33, 0.4);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-top: 1px solid rgba(255, 255, 255, 0.25);
+      border-left: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 28px;
+      padding: 60px 40px;
+      text-align: center;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.7), 0 0 50px rgba(56, 189, 248, 0.15), inset 0 1px 3px rgba(255, 255, 255, 0.2);
+      max-width: 850px;
+      margin: 0 auto;
+    }
+
+    .contact-box h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+
+    .contact-box p {
+      color: var(--muted);
+      font-size: 1.1rem;
+      margin-bottom: 36px;
+    }
+
+    .contact-methods {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .contact-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px 26px;
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-top: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 16px;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255, 255, 255, 0.15);
+    }
+
+    .contact-btn:hover {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(56, 189, 248, 0.3), inset 0 1px 3px rgba(255, 255, 255, 0.3);
+    }
+
+    /* Patička */
+    footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+      padding: 40px 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+      background: rgba(5, 7, 12, 0.5);
+      backdrop-filter: blur(12px);
+    }
+
+    footer strong {
+      color: var(--text);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Úvodní obrazovka -->
+  <div id="intro-screen" onclick="enterSite()">
+    <div class="intro-content">
+      <div class="intro-title signature-font">TheOnlyJakub</div>
+    </div>
+  </div>
+
+  <header>
+    <div class="container nav">
+      <a href="#" class="brand">
+        <div class="brand-text signature-font">TheOnlyJakub</div>
+      </a>
+      <nav class="nav-links">
+        <a href="#sluzby">Služby</a>
+        <a href="#kontakt">Kontakt</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <section class="hero">
+        <div class="badge">
+          ⚡ Moderní weby a aplikace
+        </div>
+        <h1>Stavím weby, které <span>vypadají skvěle</span> a fungují.</h1>
+        <p>Potřebuješ moderní prezentaci pro svou firmu, projekt nebo značku? Postavím ti rychlý, responzivní a 100% originální web, který zaujme každého návštěvníka.</p>
+        <div class="hero-actions">
+          <a href="#kontakt" class="btn btn-primary">Nezávazně poptat web</a>
+          <a href="#sluzby" class="btn btn-secondary">Prohlédnout služby</a>
+        </div>
+      </section>
+    </div>
+
+    <section id="sluzby">
+      <div class="container">
+        <div class="section-title">
+          <span>Co nabízím</span>
+          <h2>Profesionální služby</h2>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">🌐</div>
+            <h3>Webové stránky</h3>
+            <p>Moderní prezentace pro firmy, řemeslníky, posilovny či lokální podniky. Čistý kód, blesková rychlost a špičkový design.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">📱</div>
+            <h3>Plná responzivita</h3>
+            <p>Tvůj web bude vypadat naprosto perfektně na každém zařízení – na velkém monitoru, notebooku, tabletu i mobilním telefonu.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3>Optimalizace a rychlost</h3>
+            <p>Žádné zbytečné zpomalující šablony. Využívám moderní technologie pro bleskové načítání a čistou strukturu.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="kontakt">
+      <div class="container">
+        <div class="contact-box">
+          <h2>Chceš nový web? Ozvi se mi hned teď!</h2>
+          <p>Napiš mi na e-mail, zavolej nebo mrkni na Instagram. Domluvíme se na detailech tvého projektu.</p>
+          
+          <div class="contact-methods">
+            <a href="tel:770155650" class="contact-btn">
+              📞 770 155 650
+            </a>
+            <a href="mailto:kaliankojakub096@gmail.com" class="contact-btn">
+              ✉️ kaliankojakub096@gmail.com
+            </a>
+            <a href="https://instagram.com/k._.aliank._.o" target="_blank" rel="noopener" class="contact-btn">
+              📸 @k._.aliank._.o
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>© 2026 <strong>TheOnlyJakub</strong> • Všechna práva vyhrazena.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Plynulý přechod po kliknutí na úvodní obrazovku
+    function enterSite() {
+      const intro = document.getElementById('intro-screen');
+      intro.classList.add('hidden');
+    }
+  </script>
+
+</body>
+</html>
